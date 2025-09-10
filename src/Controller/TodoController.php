@@ -37,7 +37,7 @@ final class TodoController extends AbstractController
 
     #[Route('/todo', name: 'create', methods: ["POST"], format: 'json')]
     #[OA\Response(
-        response: 200,
+        response: 201,
         description: 'Returns the created todo.',
         content: new Model(type: Todo::class)
     )]
@@ -62,7 +62,7 @@ final class TodoController extends AbstractController
         $entityManager->persist($todo);
         $entityManager->flush();
 
-        return new JsonResponse($serializer->serialize($todo, "json"));
+        return new JsonResponse($serializer->serialize($todo, "json"), 201);
     }
 
     #[Route('/todo/{id}', name: 'read', methods: ["GET"])]
@@ -86,7 +86,7 @@ final class TodoController extends AbstractController
 
     #[Route('/todo/{id}', name: 'update', methods: ["PUT"], format: 'json')]
     #[OA\Response(
-        response: 200,
+        response: 201,
         description: 'Returns the updated todo.',
         content: new Model(type: Todo::class)
     )]
@@ -110,17 +110,17 @@ final class TodoController extends AbstractController
         $todo->setFinishedIfNotNull($todoDto->finished);
         $errors = $validator->validate($todo);
         if (count($errors) > 0) {
-            return new JsonResponse($errors);
+            return new JsonResponse($errors, 400);
         }
         $entityManager->persist($todo);
         $entityManager->flush();
 
-        return new JsonResponse($serializer->serialize($todo, "json"));
+        return new JsonResponse($serializer->serialize($todo, "json"), 1);
     }
 
     #[Route('/todo/{id}', name: 'delete', methods: ["DELETE"])]
     #[OA\Response(
-        response: 200,
+        response: 202,
         description: 'Returns a success message if the todo with given id could be removed from database.',
         content: new Model(type: Todo::class)
     )]
@@ -136,6 +136,6 @@ final class TodoController extends AbstractController
         $entityManager->remove($todo);
         $entityManager->flush();
 
-        return new JsonResponse("Todo with id: " . $id . " succesfully removed.");
+        return new JsonResponse("Todo with id: " . $id . " succesfully removed.", 202);
     }
 }
