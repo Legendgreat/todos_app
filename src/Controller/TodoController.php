@@ -22,7 +22,7 @@ final class TodoController extends AbstractController
     #[Route('/todo', name: 'read_all', methods: ["GET"])]
     #[OA\Response(
         response: 200,
-        description: 'Returns all todos',
+        description: 'Returns all todos.',
         content: new OA\JsonContent(
             type: 'array',
             items: new OA\Items(ref: new Model(type: Todo::class))
@@ -38,7 +38,7 @@ final class TodoController extends AbstractController
     #[Route('/todo', name: 'create', methods: ["POST"], format: 'json')]
     #[OA\Response(
         response: 200,
-        description: 'Returns the created todo',
+        description: 'Returns the created todo.',
         content: new Model(type: Todo::class)
     )]
     #[OA\Tag(name: 'todos')]
@@ -66,6 +66,12 @@ final class TodoController extends AbstractController
     }
 
     #[Route('/todo/{id}', name: 'read', methods: ["GET"])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns the todo by the given id.',
+        content: new Model(type: Todo::class)
+    )]
+    #[OA\Tag(name: 'todos')]
     public function read(
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
@@ -79,6 +85,12 @@ final class TodoController extends AbstractController
     }
 
     #[Route('/todo/{id}', name: 'update', methods: ["PUT"], format: 'json')]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns the updated todo.',
+        content: new Model(type: Todo::class)
+    )]
+    #[OA\Tag(name: 'todos')]
     public function update(
         #[MapRequestPayload] TodoUpdateDTO $todoDto,
         SerializerInterface $serializer,
@@ -107,6 +119,12 @@ final class TodoController extends AbstractController
     }
 
     #[Route('/todo/{id}', name: 'delete', methods: ["DELETE"])]
+    #[OA\Response(
+        response: 200,
+        description: 'Returns a success message if the todo with given id could be removed from database.',
+        content: new Model(type: Todo::class)
+    )]
+    #[OA\Tag(name: 'todos')]
     public function delete(
         EntityManagerInterface $entityManager,
         int $id
