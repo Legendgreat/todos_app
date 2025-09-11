@@ -2,10 +2,25 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\TodoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
+#[ApiResource]
+#[GetCollection]
+#[Get]
+#[Delete]
+#[Post(validationContext: ['groups' => ['Default', 'postValidation']])]
+// #[Put(validationContext: ['groups' => ['Default', 'putValidation']])]
+#[Patch(validationContext: ['groups' => ['Default', 'patchValidation']])]
 #[ORM\Entity(repositoryClass: TodoRepository::class)]
 class Todo
 {
@@ -15,6 +30,7 @@ class Todo
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(groups: ['postValidation', 'putValidation'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -62,26 +78,5 @@ class Todo
         $this->finished = $finished;
 
         return $this;
-    }
-
-    public function setTitleIfNotNull(?string $title): void
-    {
-        if (!is_null($title)) {
-            $this->title = $title;
-        }
-    }
-
-    public function setDescriptionIfNotNull(?string $description): void
-    {
-        if (!is_null($description)) {
-            $this->description = $description;
-        }
-    }
-
-    public function setFinishedIfNotNull(?string $finished): void
-    {
-        if (!is_null($finished)) {
-            $this->finished = $finished;
-        }
     }
 }
